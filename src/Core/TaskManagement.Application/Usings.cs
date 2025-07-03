@@ -1,0 +1,14 @@
+﻿global using AutoMapper;
+global using MediatR;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.Extensions.DependencyInjection;
+global using System.Linq.Expressions;
+global using System.Net;
+global using System.Text.Json;
+global using TaskManagement.Application.Common;
+global using TaskManagement.Application.DTO;
+global using TaskManagement.Application.Exceptions;
+global using TaskManagement.Application.Interfaces;
+global using TaskManagement.Application.Pagination;
+global using TaskManagement.Domain.Entities;
+global using TaskManagement.Domain.Enums;

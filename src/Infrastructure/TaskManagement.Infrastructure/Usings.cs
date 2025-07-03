@@ -1,0 +1,14 @@
+﻿global using AutoMapper;
+global using AutoMapper.QueryableExtensions;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using System.Linq.Expressions;
+global using TaskManagement.Application.Common;
+global using TaskManagement.Application.DTO;
+global using TaskManagement.Application.Interfaces;
+global using TaskManagement.Application.Pagination;
+global using TaskManagement.Domain.Entities;
+global using TaskManagement.Infrastructure.Data;
+global using TaskManagement.Infrastructure.Repository;

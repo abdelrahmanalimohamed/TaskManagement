@@ -1,0 +1,11 @@
+﻿global using MediatR;
+global using Microsoft.AspNetCore.Mvc;
+global using TaskManagement.Application.Common;
+global using TaskManagement.Application.DTO;
+global using TaskManagement.Application.Exceptions;
+global using TaskManagement.Application.Extensions;
+global using TaskManagement.Application.Features.tasks.Create;
+global using TaskManagement.Application.Features.tasks.Read;
+global using TaskManagement.Application.Features.users.Create;
+global using TaskManagement.Application.Features.users.Read;
+global using TaskManagement.Infrastructure.Extensions;
