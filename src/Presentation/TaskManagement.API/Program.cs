@@ -1,3 +1,5 @@
+using FluentValidation.AspNetCore;
+
 namespace TaskManagement.API;
 public class Program
 {

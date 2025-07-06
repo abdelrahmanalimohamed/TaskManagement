@@ -15,10 +15,6 @@ public class UsersController : ControllerBase
 		[FromBody] CreateUserDTO createUserDTO, 
 		CancellationToken cancellationToken)
 	{
-		if (createUserDTO == null || string.IsNullOrWhiteSpace(createUserDTO.name))
-		{
-			return BadRequest("Name cannot be null.");
-		}
 		var command = new CreateUserCommand(createUserDTO);
 
 		var result = await _mediator.Send(command, cancellationToken);

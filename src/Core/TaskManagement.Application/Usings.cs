@@ -1,4 +1,6 @@
 ﻿global using AutoMapper;
+global using FluentValidation;
+global using FluentValidation.Results;
 global using MediatR;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +14,7 @@ global using TaskManagement.Application.Exceptions;
 global using TaskManagement.Application.Interfaces;
 global using TaskManagement.Application.Services;
 global using TaskManagement.Application.UnitOfWork;
+global using TaskManagement.Application.Validation;
 global using TaskManagement.Domain.Common;
 global using TaskManagement.Domain.Entities;
 global using TaskManagement.Domain.Enums;

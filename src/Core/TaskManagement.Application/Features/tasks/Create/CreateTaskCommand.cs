@@ -1,9 +1,9 @@
 ﻿namespace TaskManagement.Application.Features.tasks.Create;
 public class CreateTaskCommand : IRequest<GetTasksDTO>
 {
-	public CreateTaskDTO createTaskDTO { get; }
+	public CreateTaskDTO Task { get; }
 	public CreateTaskCommand(CreateTaskDTO TaskDTO)
 	{
-		createTaskDTO = TaskDTO;
+		Task = TaskDTO;
 	}
 }

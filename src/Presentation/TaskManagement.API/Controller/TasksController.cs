@@ -13,10 +13,6 @@ public class TasksController : ControllerBase
 	[Route("create")]
 	public async Task<IActionResult> CreateTask([FromBody] CreateTaskDTO createTaskDTO, CancellationToken cancellationToken)
 	{
-		if (createTaskDTO == null)
-		{
-			return BadRequest("task details cannot be null");
-		}
 		var command = new CreateTaskCommand(createTaskDTO);
 		var result = await _mediator.Send(command, cancellationToken);
 

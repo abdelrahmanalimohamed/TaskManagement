@@ -2,5 +2,5 @@
 public abstract class BaseEntity
 {
 	public Guid Id { get; private set; } = Guid.NewGuid();
-	public DateTime CreatedDate { get; private set; } = DateTime.UtcNow;
+	public DateTime CreatedDate { get; private set; } = DateTime.Now;
 }

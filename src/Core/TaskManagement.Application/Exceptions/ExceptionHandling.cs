@@ -2,7 +2,6 @@
 public class ExceptionHandling
 {
 	private readonly RequestDelegate _next;
-
 	private readonly ILogger<ExceptionHandling> _logger;
 	public ExceptionHandling(
 		RequestDelegate next, 
@@ -32,26 +31,51 @@ public class ExceptionHandling
 		HttpStatusCode status;
 		object response;
 
-		if (exception is CustomDuplicateNameException)
+		status = exception switch
 		{
-			status = HttpStatusCode.BadRequest;
-			_logger.LogWarning(exception, "Duplicate name exception occurred.");
-		}
-		else
-		{
-			status = HttpStatusCode.InternalServerError;
-			_logger.LogError(exception, "An unhandled exception occurred.");
-		}
-
-		response = new
-		{
-			statusCode = (int)status,
-			error = status.ToString(),
-			message = exception.InnerException != null
-				? exception.InnerException.Message
-				: exception.Message,
+			CustomDuplicateNameException => HttpStatusCode.BadRequest,
+			ValidationsException => HttpStatusCode.BadRequest,
+			_ => HttpStatusCode.InternalServerError
 		};
 
+		response = exception switch
+		{
+			CustomDuplicateNameException duplicateException => new
+			{
+				statusCode = (int)status,
+				error = "Duplication error",
+				message = duplicateException.InnerException != null
+					? duplicateException.InnerException.Message
+					: duplicateException.Message
+			},
+			ValidationsException validationException => new
+			{
+				statusCode = (int)status,
+				error = "Validation error",
+				message = validationException.Errors
+			},
+			_ => new
+			{
+				statusCode = (int)status,
+				error = "InternalServerError",
+				message = exception.InnerException != null
+					? exception.InnerException.Message
+					: exception.Message
+			}
+		};
+
+		switch (exception)
+		{
+			case CustomDuplicateNameException duplicateException:
+				_logger.LogWarning(duplicateException, "Duplicate name exception occurred.");
+				break;
+			case ValidationsException validationException:
+				_logger.LogWarning("Validation error occurred: {Errors}", validationException.Errors);
+				break;
+			default:
+				_logger.LogError(exception, "An unhandled exception occurred.");
+				break;
+		}
 		context.Response.StatusCode = (int)status;
 		var jsonResponse = JsonSerializer.Serialize(response);
 

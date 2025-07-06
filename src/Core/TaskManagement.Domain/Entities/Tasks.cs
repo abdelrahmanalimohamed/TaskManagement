@@ -17,7 +17,7 @@ public class Tasks : BaseEntity
 	{
 		UserId = userId;
 		State = TaskState.InProgress;
-		LastAssignedAt = DateTime.UtcNow;
+		LastAssignedAt = DateTime.Now;
 	}
 	public void MarkAsCompleted()
 	{
@@ -29,7 +29,7 @@ public class Tasks : BaseEntity
 	{
 		UserId = null;
 		State = TaskState.Waiting;
-		LastAssignedAt = DateTime.UtcNow;
+		LastAssignedAt = DateTime.Now;
 	}
 
 	public Guid? GetPreviousAssignedUserId()

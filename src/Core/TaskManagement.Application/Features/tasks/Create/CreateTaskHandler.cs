@@ -21,7 +21,7 @@ internal class CreateTaskHandler : IRequestHandler<CreateTaskCommand , GetTasksD
 	}
 	public async Task<GetTasksDTO> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
 	{
-		var titleToCheck = request.createTaskDTO.Title.Trim().ToLower();
+		var titleToCheck = request.Task.Title.Trim().ToLower();
 
 		if (await _taskRepository.ExistsAnyAsync(x => x.Title.ToLower() == titleToCheck))
 		{
@@ -30,7 +30,7 @@ internal class CreateTaskHandler : IRequestHandler<CreateTaskCommand , GetTasksD
 
 		var users = await _userRepository.GetUsersWithoutTasksAsync(cancellationToken);
 
-		var task = _mapper.Map<Tasks>(request.createTaskDTO);
+		var task = _mapper.Map<Tasks>(request.Task);
 		Users? selectedUser = null;
 
 		if (users.Count() == 0)
