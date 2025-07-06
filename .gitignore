@@ -365,3 +365,4 @@ FodyWeavers.xsd
 TaskManagement.db
 TaskManagement.db-shm
 TaskManagement.db-wal
+/src/Presentation/TaskManagement.API/TaskManagement.db-wal
