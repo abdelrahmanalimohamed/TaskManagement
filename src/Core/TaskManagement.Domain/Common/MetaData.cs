@@ -1,4 +1,4 @@
-﻿namespace TaskManagement.Application.Pagination;
+﻿namespace TaskManagement.Domain.Common;
 public sealed class MetaData
 {
 	public int CurrentPage { get; set; }

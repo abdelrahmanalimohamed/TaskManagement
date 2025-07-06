@@ -1,4 +1,6 @@
-﻿namespace TaskManagement.Infrastructure.Repository;
+﻿using TaskManagement.Domain.Common;
+
+namespace TaskManagement.Infrastructure.Repository;
 public class BaseRepository<T> : IBaseRepository<T> where T : class
 {
 	private AppDbContext _appDbContext;
@@ -10,60 +12,32 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
 	}
 	public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
 	{
-		await _appDbContext.Set<T>().AddAsync(entity, cancellationToken);
-		await _appDbContext.SaveChangesAsync(cancellationToken);
+		await _dbSet.AddAsync(entity, cancellationToken);
 		return entity;
 	}
-	public async Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
+	public Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
 	{
-		_appDbContext.Set<T>().Remove(entity);
-		await _appDbContext.SaveChangesAsync(cancellationToken);
-	}
-
-	public async Task<bool> ExistsAsync<TProperty>(
-		Expression<Func<T, TProperty>> propertySelector, 
-		TProperty value)
-	{
-		var parameter = Expression.Parameter(typeof(T), "x");
-		var property = Expression.Invoke(propertySelector, parameter);
-
-		Expression propertyExpr = property;
-		Expression valueExpr = Expression.Constant(value, typeof(TProperty));
-
-		if (typeof(TProperty) == typeof(string))
-		{
-			var trimMethod = typeof(string).GetMethod(nameof(string.Trim), Type.EmptyTypes);
-			propertyExpr = Expression.Call(property, trimMethod);
-
-			if (value is string s)
-			{
-				valueExpr = Expression.Constant(s.Trim(), typeof(TProperty));
-			}
-		}
-
-		var equality = Expression.Equal(propertyExpr, valueExpr);
-		var lambda = Expression.Lambda<Func<T, bool>>(equality, parameter);
-
-		return await _dbSet.AnyAsync(lambda);
+		_dbSet.Remove(entity);
+		return Task.CompletedTask;
 	}
 	public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
 	{
-		return await _appDbContext.Set<T>().ToListAsync(cancellationToken);
+		return await _dbSet.ToListAsync(cancellationToken);
 	}	
-	public async Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
+	public Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
 	{
-		_appDbContext.Entry(entity).State = EntityState.Modified;
-		await _appDbContext.SaveChangesAsync(cancellationToken);
+		_dbSet.Update(entity);
+		return Task.CompletedTask;
 	}
 	public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
 	{
-		return await _appDbContext.Set<T>().Where(predicate).ToListAsync(cancellationToken);
+		return await _dbSet.Where(predicate).ToListAsync(cancellationToken);
 	}
 	public async Task<bool> ExistsAnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
 	{
 		return await _dbSet.AnyAsync(predicate, cancellationToken);
 	}
-	public async Task<PagedList<T>> GetAllAsync(
+	public async Task<PagedList<T>> GetAllWithPagingAsync(
 		RequestParameters requestParameters, 
 		CancellationToken cancellationToken = default, 
 		Func<IQueryable<T>, IQueryable<T>> include = null)

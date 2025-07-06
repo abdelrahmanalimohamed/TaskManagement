@@ -15,7 +15,7 @@ public class MappingProfile : Profile
 						 opt => opt.MapFrom(src => src.CreatedDate.ToString("yyyy-MM-dd HH:mm")))
 			  .ForMember(dest => dest.State,
 						 opt => opt.MapFrom(src => src.State.ToString()))
-				  .ForMember(dest => dest.UserName, 
+				  .ForMember(dest => dest.AssignedUser, 
 							opt => opt.MapFrom(src => src.Users != null ? src.Users.Name : string.Empty));
 	}
 }

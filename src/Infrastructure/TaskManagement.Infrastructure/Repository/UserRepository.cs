@@ -1,18 +1,14 @@
-﻿
-
-namespace TaskManagement.Infrastructure.Repository;
+﻿namespace TaskManagement.Infrastructure.Repository;
 public class UserRepository : BaseRepository<Users>, IUserRepository
 {
-	private readonly IMapper _mapper;
-	public UserRepository(AppDbContext appDbContext, IMapper mapper) : base(appDbContext)
+	public UserRepository(AppDbContext appDbContext) 
+		: base(appDbContext)
 	{
-		_mapper = mapper;
 	}
-	public async Task<IEnumerable<GetUsersDTO>> GetUsersWithoutTasksAsync(CancellationToken cancellationToken = default)
+	public async Task<IEnumerable<Users>> GetUsersWithoutTasksAsync(CancellationToken cancellationToken = default)
 	{
 		return await _dbSet
-			.Where(u => !u.Tasks.Any())
-			.ProjectTo<GetUsersDTO>(_mapper.ConfigurationProvider)
+			.Where(u => !u.Tasks.Any(t => t.State == TaskState.InProgress))
 			.ToListAsync(cancellationToken);
 	}
 }

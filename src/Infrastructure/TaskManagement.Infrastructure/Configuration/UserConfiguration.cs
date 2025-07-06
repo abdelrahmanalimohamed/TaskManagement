@@ -8,6 +8,8 @@ internal class UserConfiguration : IEntityTypeConfiguration<Users>
 		builder.HasIndex(u => u.Name)
 			   .IsUnique();
 
-		builder.Property(e => e.Name).IsRequired().HasMaxLength(200);
+		builder.Property(e => e.Name)
+			   .IsRequired()
+			   .HasMaxLength(200);
 	}
 }

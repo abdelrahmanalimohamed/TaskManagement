@@ -2,9 +2,14 @@
 public class ExceptionHandling
 {
 	private readonly RequestDelegate _next;
-	public ExceptionHandling(RequestDelegate next)
+
+	private readonly ILogger<ExceptionHandling> _logger;
+	public ExceptionHandling(
+		RequestDelegate next, 
+		ILogger<ExceptionHandling> logger)
 	{
 		_next = next;
+		_logger = logger;
 	}
 	public async Task InvokeAsync(HttpContext context)
 	{
@@ -30,10 +35,12 @@ public class ExceptionHandling
 		if (exception is CustomDuplicateNameException)
 		{
 			status = HttpStatusCode.BadRequest;
+			_logger.LogWarning(exception, "Duplicate name exception occurred.");
 		}
 		else
 		{
 			status = HttpStatusCode.InternalServerError;
+			_logger.LogError(exception, "An unhandled exception occurred.");
 		}
 
 		response = new

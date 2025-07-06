@@ -1,4 +1,4 @@
-﻿namespace TaskManagement.Application.Pagination;
+﻿namespace TaskManagement.Domain.Common;
 public class PagedList<T> : List<T>
 {
 	public MetaData MetaData { get; private set; }

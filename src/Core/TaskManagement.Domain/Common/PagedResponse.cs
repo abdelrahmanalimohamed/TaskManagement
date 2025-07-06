@@ -1,4 +1,4 @@
-﻿namespace TaskManagement.Application.Pagination;
+﻿namespace TaskManagement.Domain.Common;
 public class PagedResponse<T>
 {
 	public IEnumerable<T> Items { get; set; }

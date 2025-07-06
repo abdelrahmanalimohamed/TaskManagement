@@ -1,5 +1,5 @@
 ﻿namespace TaskManagement.Application.Interfaces;
 public interface IUserRepository : IBaseRepository<Users>
 {
-	Task<IEnumerable<GetUsersDTO>> GetUsersWithoutTasksAsync(CancellationToken cancellationToken = default);
+	Task<IEnumerable<Users>> GetUsersWithoutTasksAsync(CancellationToken cancellationToken = default);
 }

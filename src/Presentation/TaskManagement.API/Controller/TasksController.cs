@@ -1,6 +1,4 @@
-﻿
-
-namespace TaskManagement.API.Controller;
+﻿namespace TaskManagement.API.Controller;
 
 [Route("api/[controller]")]
 [ApiController]

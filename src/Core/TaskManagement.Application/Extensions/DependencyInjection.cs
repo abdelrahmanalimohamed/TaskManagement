@@ -1,4 +1,5 @@
 ﻿
+
 namespace TaskManagement.Application.Extensions;
 public static class DependencyInjection
 {
@@ -10,7 +11,7 @@ public static class DependencyInjection
 		  configuration.RegisterServicesFromAssembly(assembly));
 
 		services.AddAutoMapper(typeof(MappingProfile));
-
+		services.AddScoped<ITaskReassignmentService , TaskReassignmentService>();
 		return services;
 	}
 }

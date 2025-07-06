@@ -5,6 +5,7 @@ public class AppDbContext : DbContext
 
 	public DbSet<Users> Users { get; set; }
 	public DbSet<Tasks> Tasks { get; set; }
+	public DbSet<TaskAssignmentHistory> TaskAssignmentHistories { get; set; }
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
