@@ -4,6 +4,7 @@
 
 TaskManagement is a simple yet robust web API designed to manage Users and Tasks with automated task assignment and reassignment logic. The system ensures fair distribution of tasks among users and tracks the assignment history, supporting dynamic user and task management.
 
+✅ This version uses Controllers to define API endpoints, providing a more structured and conventional approach.
 ## Features
 
 * **User Management**: Create and retrieve users, each identified by a unique name.
