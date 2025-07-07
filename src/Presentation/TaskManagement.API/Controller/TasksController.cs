@@ -11,7 +11,9 @@ public class TasksController : ControllerBase
 	}
 	[HttpPost]
 	[Route("create")]
-	public async Task<IActionResult> CreateTask([FromBody] CreateTaskDTO createTaskDTO, CancellationToken cancellationToken)
+	public async Task<IActionResult> CreateTask(
+		[FromBody] CreateTaskDTO createTaskDTO, 
+		CancellationToken cancellationToken)
 	{
 		var command = new CreateTaskCommand(createTaskDTO);
 		var result = await _mediator.Send(command, cancellationToken);
