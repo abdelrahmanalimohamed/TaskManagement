@@ -8,6 +8,7 @@ global using System.Linq.Expressions;
 global using TaskManagement.Application.Common;
 global using TaskManagement.Application.Interfaces;
 global using TaskManagement.Application.UnitOfWork;
+global using TaskManagement.Domain.Common;
 global using TaskManagement.Domain.Entities;
 global using TaskManagement.Domain.Enums;
 global using TaskManagement.Infrastructure.BackgroundServices;

@@ -1,9 +1,8 @@
-﻿using TaskManagement.Domain.Common;
-
-namespace TaskManagement.Infrastructure.Repository;
+﻿namespace TaskManagement.Infrastructure.Repository;
 public class TaskRepository : BaseRepository<Tasks>, ITaskRepository
 {
-	public TaskRepository(AppDbContext appDbContext) : base(appDbContext)
+	public TaskRepository(AppDbContext appDbContext) 
+		: base(appDbContext)
 	{
 	}
 	public async Task<List<Tasks>> GetAllPendingTasksAsync(CancellationToken cancellationToken)
@@ -13,7 +12,9 @@ public class TaskRepository : BaseRepository<Tasks>, ITaskRepository
 			.Where(t => t.State != TaskState.Completed)
 			.ToListAsync(cancellationToken);
 	}
-	public async Task<PagedList<Tasks>> GetAllWithUsersAsync(RequestParameters requestParameters, CancellationToken cancellationToken)
+	public async Task<PagedList<Tasks>> GetAllWithUsersAsync(
+		RequestParameters requestParameters, 
+		CancellationToken cancellationToken)
 	{
 		return await GetAllWithPagingAsync(requestParameters, cancellationToken,
 			include: q => q.Include(t => t.Users));

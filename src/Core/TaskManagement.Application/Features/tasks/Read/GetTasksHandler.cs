@@ -10,7 +10,6 @@ internal class GetTasksHandler : IRequestHandler<GetTasksQuery, PagedResponse<Ge
 		_tasksRepository = tasksRepository;
 		_mapper = mapper;
 	}
-
 	public async Task<PagedResponse<GetTasksDTO>> Handle(GetTasksQuery request, CancellationToken cancellationToken)
 	{
 		var pagedTasks = await _tasksRepository.GetAllWithUsersAsync(request.Parameters,cancellationToken);

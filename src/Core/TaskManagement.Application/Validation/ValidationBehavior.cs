@@ -11,7 +11,6 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 		_validators = validators;
 		_serviceProvider = serviceProvider;
 	}
-
 	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
 		var failures = new List<ValidationFailure>();
@@ -38,7 +37,6 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 			if (!result.IsValid)
 				failures.AddRange(result.Errors);
 		}
-
 		if (failures.Any())
 		{
 			var failureDictionary = failures
@@ -47,7 +45,6 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 
 			throw new ValidationsException(failureDictionary);
 		}
-
 		return await next();
 	}
 }

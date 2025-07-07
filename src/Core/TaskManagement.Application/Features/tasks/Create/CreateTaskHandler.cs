@@ -2,13 +2,13 @@
 internal class CreateTaskHandler : IRequestHandler<CreateTaskCommand , GetTasksDTO>
 {
 	private readonly ITaskRepository _taskRepository;
-	private readonly IBaseRepository<TaskAssignmentHistory> _historyRepository;
+	private readonly ITaskAssignmentHistoryRepository _historyRepository;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IUserRepository _userRepository;
 	private IMapper _mapper;
 	public CreateTaskHandler(
-		ITaskRepository taskRepository, 
-		IBaseRepository<TaskAssignmentHistory> historyRepository,
+		ITaskRepository taskRepository,
+		ITaskAssignmentHistoryRepository historyRepository,
 		IUnitOfWork unitOfWork,
 		IMapper mapper , 
 		IUserRepository userRepository)
@@ -53,7 +53,10 @@ internal class CreateTaskHandler : IRequestHandler<CreateTaskCommand , GetTasksD
 		}
 		return _mapper.Map<GetTasksDTO>(result);
 	}
-	private async Task InsertIntoAssigmentHistory(Tasks createdTask, Users users , CancellationToken cancellationToken)
+	private async Task InsertIntoAssigmentHistory(
+		Tasks createdTask, 
+		Users users , 
+		CancellationToken cancellationToken)
 	{
 		var historyEntry = createdTask.CreateAssignmentHistory(users);
 		await _historyRepository.AddAsync(historyEntry, cancellationToken);
