@@ -1,3 +1,5 @@
+
+
 namespace TaskManagement.API;
 public class Program
 {
@@ -12,6 +14,8 @@ public class Program
 		builder.Services.AddApplication()
 						.AddInfrastructure(builder.Configuration);
 
+		builder.Services.AddCarter();
+
 		var app = builder.Build();
 
 		using (var scope = app.Services.CreateScope())
@@ -25,6 +29,7 @@ public class Program
 		app.UseAuthorization();
 		app.MapControllers();
 
+		app.MapCarter();
 		app.UseMiddleware<ExceptionHandling>();
 
 		app.Run();

@@ -1,4 +1,5 @@
-﻿global using MediatR;
+﻿global using Carter;
+global using MediatR;
 global using Microsoft.AspNetCore.Mvc;
 global using TaskManagement.Application.Common;
 global using TaskManagement.Application.DTO;
