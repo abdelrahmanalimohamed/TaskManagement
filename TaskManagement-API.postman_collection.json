@@ -1,0 +1,150 @@
+{
+	"info": {
+		"_postman_id": "88911df2-2ce9-425a-ab37-e5c567ed577d",
+		"name": "TaskManagement-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7468674"
+	},
+	"item": [
+		{
+			"name": "CreateTask",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5011/api/Tasks/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5011",
+					"path": [
+						"api",
+						"Tasks",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get-All-Tasks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5011/api/tasks/get-all?PageNumber=1&PageSize=100",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5011",
+					"path": [
+						"api",
+						"tasks",
+						"get-all"
+					],
+					"query": [
+						{
+							"key": "PageNumber",
+							"value": "1"
+						},
+						{
+							"key": "PageSize",
+							"value": "100"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create-User",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5011/api/users/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5011",
+					"path": [
+						"api",
+						"users",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get-All-Tasks",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5011/api/Users/get-all?PageNumber=1&PageSize=100",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5011",
+					"path": [
+						"api",
+						"Users",
+						"get-all"
+					],
+					"query": [
+						{
+							"key": "PageNumber",
+							"value": "1"
+						},
+						{
+							"key": "PageSize",
+							"value": "100"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
