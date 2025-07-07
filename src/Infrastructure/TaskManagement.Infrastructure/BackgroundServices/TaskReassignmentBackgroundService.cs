@@ -3,7 +3,7 @@ public class TaskReassignmentBackgroundService : BackgroundService
 {
 	private readonly IServiceProvider _serviceProvider;
 	private readonly ILogger<TaskReassignmentBackgroundService> _logger;
-	private readonly TimeSpan _interval = TimeSpan.FromMinutes(1);
+	private readonly TimeSpan _interval = TimeSpan.FromMinutes(2);
 	public TaskReassignmentBackgroundService(
 		IServiceProvider serviceProvider,
 		ILogger<TaskReassignmentBackgroundService> logger)

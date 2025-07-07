@@ -1,7 +1,7 @@
 ﻿namespace TaskManagement.Infrastructure.Repository;
 public class UserRepository : BaseRepository<Users>, IUserRepository
 {
-	public UserRepository(AppDbContext appDbContext) 
+	public UserRepository(DbContext appDbContext) 
 		: base(appDbContext)
 	{
 	}

@@ -4,6 +4,7 @@ public class TaskReassignmentService : ITaskReassignmentService
 	private readonly ITaskRepository _taskRepository;
 	private readonly IUserRepository _userRepository;
 	private readonly ITaskAssignmentHistoryRepository _historyRepository;
+	private readonly ITaskDomainService _taskDomainService;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly ILogger<TaskReassignmentService> _logger;
 	public TaskReassignmentService(
@@ -11,6 +12,7 @@ public class TaskReassignmentService : ITaskReassignmentService
 	 IUserRepository userRepository,
 	 IUnitOfWork unitOfWork,
 	 ITaskAssignmentHistoryRepository historyRepository,
+	 ITaskDomainService taskDomainService,
 	 ILogger<TaskReassignmentService> logger)
 	{
 		_taskRepository = taskRepository;
@@ -18,6 +20,7 @@ public class TaskReassignmentService : ITaskReassignmentService
 		_unitOfWork = unitOfWork;
 		_historyRepository = historyRepository;
 		_logger = logger;
+		_taskDomainService = taskDomainService;
 	}
 	public async Task ReassignTasksAsync(CancellationToken cancellationToken = default)
 	{
@@ -47,33 +50,33 @@ public class TaskReassignmentService : ITaskReassignmentService
 	{
 		var allUserIds = allUsers.Select(u => u.Id).ToList();
 
-		if (task.HasBeenAssignedToAllUsers(allUserIds))
+		if (_taskDomainService.HasBeenAssignedToAllUsers(task , allUserIds))
 		{
-			task.MarkAsCompleted();
+			_taskDomainService.MarkAsCompleted(task);
 			await _taskRepository.UpdateAsync(task, cancellationToken);
 			_logger.LogInformation("Task {TaskId} marked as completed - assigned to all users", task.Id);
 		}
 		else
 		{
-			var eligibleUsers = task.GetEligibleUsers(allUsers);
+			var eligibleUsers = _taskDomainService.GetEligibleUsers(task, allUsers);
 
 			if (!eligibleUsers.Any())
 			{
-				task.SetToWaiting();
+				_taskDomainService.SetToWaiting(task);
 				await _taskRepository.UpdateAsync(task, cancellationToken);
 				_logger.LogInformation("Task {TaskId} set to waiting - no eligible users", task.Id);
 			}
 			else
 			{
-				var selectedUser = task.SelectRandomUser(eligibleUsers);
+				var selectedUser = _taskDomainService.SelectRandomUser(eligibleUsers);
 				if (selectedUser == null)
 				{
 					_logger.LogWarning("No eligible user could be selected for task {TaskId}", task.Id);
 					return;
 				}
 
-				task.AssignToUser(selectedUser.Id);
-				var historyEntry = task.CreateAssignmentHistory(selectedUser);
+				_taskDomainService.AssignToUser(task, selectedUser.Id);
+				var historyEntry = _taskDomainService.CreateAssignmentHistory(task , selectedUser);
 
 				await _historyRepository.AddAsync(historyEntry, cancellationToken);
 				await _taskRepository.UpdateAsync(task, cancellationToken);

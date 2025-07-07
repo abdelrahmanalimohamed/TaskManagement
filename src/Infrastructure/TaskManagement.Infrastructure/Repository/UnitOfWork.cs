@@ -1,8 +1,8 @@
 ﻿namespace TaskManagement.Infrastructure.Repository;
 public class UnitOfWork : IUnitOfWork
 {
-	private readonly AppDbContext _appDbContext;
-	public UnitOfWork (AppDbContext appDbContext)
+	private readonly DbContext _appDbContext;
+	public UnitOfWork (DbContext appDbContext)
 	{
 		_appDbContext = appDbContext;
 	}

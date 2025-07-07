@@ -1,7 +1,7 @@
 ﻿namespace TaskManagement.Infrastructure.Repository;
 public class TaskRepository : BaseRepository<Tasks>, ITaskRepository
 {
-	public TaskRepository(AppDbContext appDbContext) 
+	public TaskRepository(DbContext appDbContext) 
 		: base(appDbContext)
 	{
 	}
@@ -16,7 +16,9 @@ public class TaskRepository : BaseRepository<Tasks>, ITaskRepository
 		RequestParameters requestParameters, 
 		CancellationToken cancellationToken)
 	{
-		return await GetAllWithPagingAsync(requestParameters, cancellationToken,
-			include: q => q.Include(t => t.Users));
+		return await GetAllWithPagingAsync(
+			requestParameters, 
+			include: q => q.Include(t => t.Users), 
+			cancellationToken);
 	}
 }

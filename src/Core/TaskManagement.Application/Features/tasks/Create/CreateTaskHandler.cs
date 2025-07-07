@@ -5,23 +5,26 @@ internal class CreateTaskHandler : IRequestHandler<CreateTaskCommand , GetTasksD
 	private readonly ITaskAssignmentHistoryRepository _historyRepository;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IUserRepository _userRepository;
+	private readonly ITaskDomainService _taskDomainService;
 	private IMapper _mapper;
 	public CreateTaskHandler(
 		ITaskRepository taskRepository,
 		ITaskAssignmentHistoryRepository historyRepository,
 		IUnitOfWork unitOfWork,
 		IMapper mapper , 
-		IUserRepository userRepository)
+		IUserRepository userRepository ,
+		ITaskDomainService taskDomainService)
 	{
 		_taskRepository = taskRepository;
 		_unitOfWork = unitOfWork;
 		_historyRepository = historyRepository;
 		_mapper = mapper;
 		_userRepository = userRepository;
+		_taskDomainService = taskDomainService;
 	}
 	public async Task<GetTasksDTO> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
 	{
-		var titleToCheck = request.Task.Title.Trim().ToLower();
+		var titleToCheck = request.Task.Title.ToNormalizedLower();
 
 		if (await _taskRepository.ExistsAnyAsync(x => x.Title.ToLower() == titleToCheck))
 		{
@@ -58,7 +61,7 @@ internal class CreateTaskHandler : IRequestHandler<CreateTaskCommand , GetTasksD
 		Users users , 
 		CancellationToken cancellationToken)
 	{
-		var historyEntry = createdTask.CreateAssignmentHistory(users);
+		var historyEntry = _taskDomainService.CreateAssignmentHistory(createdTask , users);
 		await _historyRepository.AddAsync(historyEntry, cancellationToken);
 		await _unitOfWork.CommitAsync(cancellationToken);
 	}

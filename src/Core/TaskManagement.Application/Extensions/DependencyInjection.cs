@@ -15,6 +15,8 @@ public static class DependencyInjection
 		services.AddAutoMapper(typeof(MappingProfile));
 
 		services.AddScoped<ITaskReassignmentService, TaskReassignmentService>();
+
+		services.AddScoped<ITaskDomainService, TaskDomainService>();
 		return services;
 	}
 }

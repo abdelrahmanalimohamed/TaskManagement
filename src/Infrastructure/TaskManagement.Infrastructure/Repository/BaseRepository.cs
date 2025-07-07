@@ -1,11 +1,9 @@
-﻿using TaskManagement.Domain.Common;
-
-namespace TaskManagement.Infrastructure.Repository;
+﻿namespace TaskManagement.Infrastructure.Repository;
 public class BaseRepository<T> : IBaseRepository<T> where T : class
 {
-	private AppDbContext _appDbContext;
+	private DbContext _appDbContext;
 	protected readonly DbSet<T> _dbSet;
-	public BaseRepository(AppDbContext appDbContext)
+	public BaseRepository(DbContext appDbContext)
 	{
 		_appDbContext = appDbContext;
 		_dbSet = _appDbContext.Set<T>();
@@ -14,11 +12,6 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
 	{
 		await _dbSet.AddAsync(entity, cancellationToken);
 		return entity;
-	}
-	public Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
-	{
-		_dbSet.Remove(entity);
-		return Task.CompletedTask;
 	}
 	public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
 	{
@@ -29,23 +22,30 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
 		_dbSet.Update(entity);
 		return Task.CompletedTask;
 	}
-	public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
-	{
-		return await _dbSet.Where(predicate).ToListAsync(cancellationToken);
-	}
 	public async Task<bool> ExistsAnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
 	{
 		return await _dbSet.AnyAsync(predicate, cancellationToken);
 	}
 	public async Task<PagedList<T>> GetAllWithPagingAsync(
-		RequestParameters requestParameters, 
-		CancellationToken cancellationToken = default, 
-		Func<IQueryable<T>, IQueryable<T>> include = null)
+		RequestParameters requestParameters,
+		Func<IQueryable<T>, IQueryable<T>> include,
+		CancellationToken cancellationToken = default)
 	{
 		IQueryable<T> query = _dbSet;
 
-		if (include != null)
-			query = include(query);
+		query = include(query);
+
+		var count = await query.CountAsync(cancellationToken);
+		var items = await query
+			.Skip((requestParameters.PageNumber - 1) * requestParameters.PageSize)
+			.Take(requestParameters.PageSize)
+			.ToListAsync(cancellationToken);
+
+		return new PagedList<T>(items, count, requestParameters.PageNumber, requestParameters.PageSize);
+	}
+	public async Task<PagedList<T>> GetAllWithPagingAsync(RequestParameters requestParameters, CancellationToken cancellationToken = default)
+	{
+		IQueryable<T> query = _dbSet;
 
 		var count = await query.CountAsync(cancellationToken);
 		var items = await query

@@ -7,7 +7,7 @@ public static class DependencyInjection
 		this IServiceCollection services , 
 		IConfiguration configuration)
 	{
-		services.AddDbContext<AppDbContext>(options =>
+		services.AddDbContext<DbContext, AppDbContext>(options =>
 	                   options.UseSqlite(configuration["ConnectionStrings:SQLiteDefault"]));
 
 		services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));

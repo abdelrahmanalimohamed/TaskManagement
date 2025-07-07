@@ -5,23 +5,26 @@ internal class CreateUserHandler : IRequestHandler<CreateUserCommand , GetUsersD
 	private readonly ITaskRepository _taskRepository;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly ITaskAssignmentHistoryRepository _historyRepository;
+	private readonly ITaskDomainService _taskDomainService;
 	private readonly IMapper _mapper;
 	public CreateUserHandler(
 		IUserRepository userRepository,
 		ITaskRepository taskRepository,
 		IUnitOfWork unitOfWork,
 		ITaskAssignmentHistoryRepository historyRepository,
+		ITaskDomainService taskDomainService,
 		IMapper mapper)
 	{
 		_userRepository = userRepository;
 		_taskRepository = taskRepository;
 		_unitOfWork = unitOfWork;
 		_historyRepository = historyRepository;
+		_taskDomainService = taskDomainService;
 		_mapper = mapper;
 	}
 	public async Task<GetUsersDTO> Handle(CreateUserCommand request, CancellationToken cancellationToken)
 	{
-		string nameToCheck = request.User.name.Trim().ToLower();
+		string nameToCheck = request.User.name.ToNormalizedLower();
 
 		if (await _userRepository.ExistsAnyAsync(x => x.Name.ToLower() == nameToCheck , cancellationToken))
 		{
@@ -48,10 +51,10 @@ internal class CreateUserHandler : IRequestHandler<CreateUserCommand , GetUsersD
 			{
 				if (task.State == TaskState.Waiting)
 				{
-					task.AssignToUser(createdUser.Id);
+					_taskDomainService.AssignToUser(task, createdUser.Id);
 				}
 
-				var historyEntry = task.CreateAssignmentHistory(createdUser);
+				var historyEntry = _taskDomainService.CreateAssignmentHistory(task , createdUser);
 
 				await _historyRepository.AddAsync(historyEntry, cancellationToken);
 				await _taskRepository.UpdateAsync(task, cancellationToken);
