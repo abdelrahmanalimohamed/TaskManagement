@@ -9,3 +9,4 @@ global using TaskManagement.Application.Features.tasks.Read;
 global using TaskManagement.Application.Features.users.Create;
 global using TaskManagement.Application.Features.users.Read;
 global using TaskManagement.Infrastructure.Extensions;
+global using TaskManagement.Infrastructure.Seed;

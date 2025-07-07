@@ -1,13 +1,10 @@
-using FluentValidation.AspNetCore;
-
 namespace TaskManagement.API;
 public class Program
 {
-	public static void Main(string[] args)
+	public static async Task Main(string[] args)
 	{
 		var builder = WebApplication.CreateBuilder(args);
 
-		// Add services to the container.
 		builder.Services.AddAuthorization();
 
 		builder.Services.AddControllers();
@@ -17,7 +14,11 @@ public class Program
 
 		var app = builder.Build();
 
-		// Configure the HTTP request pipeline.
+		using (var scope = app.Services.CreateScope())
+		{
+			var services = scope.ServiceProvider;
+			await SeedData.InitializeAsync(services);
+		}
 
 		app.UseHttpsRedirection();
 

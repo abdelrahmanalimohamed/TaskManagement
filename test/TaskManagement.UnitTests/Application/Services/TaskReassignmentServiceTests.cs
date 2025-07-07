@@ -1,6 +1,4 @@
-﻿
-
-namespace TaskManagement.UnitTests.Application.Services;
+﻿namespace TaskManagement.UnitTests.Application.Services;
 public class TaskReassignmentServiceTests
 {
 	private readonly Mock<ITaskRepository> _taskRepositoryMock = new();

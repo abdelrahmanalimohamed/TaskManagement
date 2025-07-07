@@ -15,6 +15,7 @@ global using TaskManagement.Application.Exceptions;
 global using TaskManagement.Application.Features.tasks.Create;
 global using TaskManagement.Application.Features.tasks.Read;
 global using TaskManagement.Application.Features.users.Create;
+global using TaskManagement.Application.Features.users.Read;
 global using TaskManagement.Application.Interfaces;
 global using TaskManagement.Application.Services;
 global using TaskManagement.Application.UnitOfWork;

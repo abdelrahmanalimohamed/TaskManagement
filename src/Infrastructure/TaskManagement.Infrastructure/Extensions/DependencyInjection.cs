@@ -1,9 +1,7 @@
-﻿using TaskManagement.Infrastructure.Seed;
-
-namespace TaskManagement.Infrastructure.Extensions;
+﻿namespace TaskManagement.Infrastructure.Extensions;
 public static class DependencyInjection
 {
-	public static async Task<IServiceCollection> AddInfrastructure(
+	public static IServiceCollection AddInfrastructure(
 		this IServiceCollection services , 
 		IConfiguration configuration)
 	{
@@ -17,7 +15,7 @@ public static class DependencyInjection
 		services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 		services.AddHostedService<TaskReassignmentBackgroundService>();
-		await SeedData.InitializeAsync(services.BuildServiceProvider());
+	
 		return services;
 	}
 }
