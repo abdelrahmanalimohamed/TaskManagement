@@ -31,7 +31,7 @@ public class TasksControllerTests : IClassFixture<TaskManagementWebApplicationFa
 	public async Task GetAllTasks_ShouldReturnOk()
 	{
 		// Act
-		var response = await _client.GetAsync("/api/tasks/get-all");
+		var response = await _client.GetAsync("/api/tasks/get-all?PageNumber=1&PageSize=100");
 
 		// Assert
 		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
