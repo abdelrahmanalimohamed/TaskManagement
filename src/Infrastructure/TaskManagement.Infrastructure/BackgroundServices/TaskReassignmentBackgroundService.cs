@@ -22,7 +22,7 @@ public class TaskReassignmentBackgroundService : BackgroundService
 
 				await reassignmentService.ReassignTasksAsync(stoppingToken);
 
-				_logger.LogInformation("Task reassignment completed at {Time}", DateTime.UtcNow);
+				_logger.LogInformation("Task reassignment completed at {Time}", DateTime.Now);
 			}
 			catch (Exception ex)
 			{
