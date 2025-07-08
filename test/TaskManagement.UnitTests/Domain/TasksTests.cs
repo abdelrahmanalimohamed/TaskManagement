@@ -51,7 +51,7 @@ public class TasksTests
 	[Fact]
 	public void Can_Set_And_Get_LastAssignedAt()
 	{
-		var now = DateTime.UtcNow;
+		var now = DateTime.Now;
 		var task = new Tasks { LastAssignedAt = now };
 
 		Assert.Equal(now, task.LastAssignedAt);

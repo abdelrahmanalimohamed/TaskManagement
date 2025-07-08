@@ -7,13 +7,15 @@ internal class CreateTaskHandler : IRequestHandler<CreateTaskCommand , GetTasksD
 	private readonly IUserRepository _userRepository;
 	private readonly ITaskDomainService _taskDomainService;
 	private IMapper _mapper;
+	private readonly ILogger<CreateTaskHandler> _logger;
 	public CreateTaskHandler(
 		ITaskRepository taskRepository,
 		ITaskAssignmentHistoryRepository historyRepository,
 		IUnitOfWork unitOfWork,
 		IMapper mapper , 
 		IUserRepository userRepository ,
-		ITaskDomainService taskDomainService)
+		ITaskDomainService taskDomainService ,
+		ILogger<CreateTaskHandler> logger)
 	{
 		_taskRepository = taskRepository;
 		_unitOfWork = unitOfWork;
@@ -21,6 +23,7 @@ internal class CreateTaskHandler : IRequestHandler<CreateTaskCommand , GetTasksD
 		_mapper = mapper;
 		_userRepository = userRepository;
 		_taskDomainService = taskDomainService;
+		_logger = logger;
 	}
 	public async Task<GetTasksDTO> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
 	{
@@ -28,6 +31,7 @@ internal class CreateTaskHandler : IRequestHandler<CreateTaskCommand , GetTasksD
 
 		if (await _taskRepository.ExistsAnyAsync(x => x.Title.ToLower() == titleToCheck))
 		{
+			_logger.LogWarning("Task title '{Title}' is duplicated.", request.Task.Title);
 			throw new CustomDuplicateNameException("Task Title is duplicated");
 		}
 
@@ -39,6 +43,7 @@ internal class CreateTaskHandler : IRequestHandler<CreateTaskCommand , GetTasksD
 		if (users.Count() == 0)
 		{
 			task.State = TaskState.Waiting;
+			_logger.LogInformation("No available users. Task set to Waiting.");
 		}
 		else
 		{
@@ -46,9 +51,11 @@ internal class CreateTaskHandler : IRequestHandler<CreateTaskCommand , GetTasksD
 			
 			task.UserId = selectedUser.Id;
 			task.State = TaskState.InProgress;
+			_logger.LogInformation("Task assigned to user with ID: {UserId}", selectedUser.Id);
 		}
 		var result = await _taskRepository.AddAsync(task, cancellationToken);
 		await _unitOfWork.CommitAsync(cancellationToken);
+		_logger.LogInformation("Task created with ID: {TaskId}", result.Id);
 
 		if (result.UserId.HasValue)
 		{
@@ -61,8 +68,10 @@ internal class CreateTaskHandler : IRequestHandler<CreateTaskCommand , GetTasksD
 		Users users , 
 		CancellationToken cancellationToken)
 	{
+		_logger.LogInformation("Inserting assignment history for task ID: {TaskId}, user ID: {UserId}", createdTask.Id, users.Id);
 		var historyEntry = _taskDomainService.CreateAssignmentHistory(createdTask , users);
 		await _historyRepository.AddAsync(historyEntry, cancellationToken);
 		await _unitOfWork.CommitAsync(cancellationToken);
+		_logger.LogInformation("Assignment history inserted successfully.");
 	}
 }
