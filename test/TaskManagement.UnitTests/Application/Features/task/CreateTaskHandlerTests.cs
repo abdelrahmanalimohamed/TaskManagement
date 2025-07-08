@@ -8,6 +8,7 @@
 		private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 		private readonly Mock<ITaskDomainService> _taskDomainServiceMock = new();
 		private readonly Mock<IMapper> _mapperMock = new();
+		private readonly Mock<ILogger<CreateTaskHandler>> _loggerMock = new();
 
 		private readonly CreateTaskHandler _handler;
 
@@ -19,7 +20,8 @@
 				_unitOfWorkMock.Object,
 				_mapperMock.Object,
 				_userRepoMock.Object , 
-				_taskDomainServiceMock.Object);
+				_taskDomainServiceMock.Object ,
+				_loggerMock.Object);
 		}
 
 		[Fact]
@@ -32,6 +34,15 @@
 
 			await Assert.ThrowsAsync<CustomDuplicateNameException>(() =>
 				_handler.Handle(command, CancellationToken.None));
+
+			_loggerMock.Verify(
+				log => log.Log(
+					LogLevel.Warning,
+					It.IsAny<EventId>(),
+					It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("duplicated")),
+					It.IsAny<Exception>(),
+					It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+				Times.Once);
 		}
 
 		[Fact]
@@ -65,6 +76,34 @@
 			// Assert
 			Assert.NotNull(result);
 			_historyRepoMock.Verify(r => r.AddAsync(It.IsAny<TaskAssignmentHistory>(), It.IsAny<CancellationToken>()), Times.Once);
+
+			_loggerMock.Verify(l => l.Log(
+				LogLevel.Information,
+				It.IsAny<EventId>(),
+				It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("assigned to user")),
+				It.IsAny<Exception>(),
+				It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
+
+			_loggerMock.Verify(l => l.Log(
+				LogLevel.Information,
+				It.IsAny<EventId>(),
+				It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Task created")),
+				It.IsAny<Exception>(),
+				It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
+
+			_loggerMock.Verify(l => l.Log(
+				LogLevel.Information,
+				It.IsAny<EventId>(),
+				It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Inserting assignment history")),
+				It.IsAny<Exception>(),
+				It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
+
+			_loggerMock.Verify(l => l.Log(
+				LogLevel.Information,
+				It.IsAny<EventId>(),
+				It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("history inserted")),
+				It.IsAny<Exception>(),
+				It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
 		}
 
 		[Fact]
@@ -91,6 +130,20 @@
 
 			Assert.Equal(TaskState.Waiting, taskEntity.State);
 			_historyRepoMock.Verify(r => r.AddAsync(It.IsAny<TaskAssignmentHistory>(), It.IsAny<CancellationToken>()), Times.Never);
+
+			_loggerMock.Verify(l => l.Log(
+				LogLevel.Information,
+				It.IsAny<EventId>(),
+				It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("No available users")),
+				It.IsAny<Exception>(),
+				It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
+
+			_loggerMock.Verify(l => l.Log(
+				LogLevel.Information,
+				It.IsAny<EventId>(),
+				It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Task created")),
+				It.IsAny<Exception>(),
+				It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
 		}
 	}
 
