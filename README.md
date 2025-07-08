@@ -5,8 +5,11 @@
 TaskManagement is a simple yet robust web API designed to manage Users and Tasks with automated task assignment and reassignment logic. The system ensures fair distribution of tasks among users and tracks the assignment history, supporting dynamic user and task management.
 
 ✅ This project uses .NET 8 Minimal APIs with Carter — no controllers or MVC. All endpoints are defined using concise and lightweight route mappings directly in the API project.
+
 ✅ Implements CQRS using MediatR for a clear separation between commands and queries.
+
 ✅ Uses FluentValidation to validate incoming requests.
+
 ✅ Leverages AutoMapper to map between domain models and DTOs.
 
 ## Features
