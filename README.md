@@ -5,6 +5,13 @@
 TaskManagement is a simple yet robust web API designed to manage Users and Tasks with automated task assignment and reassignment logic. The system ensures fair distribution of tasks among users and tracks the assignment history, supporting dynamic user and task management.
 
 ✅ This version uses Controllers to define API endpoints, providing a more structured and conventional approach.
+
+✅ Implements CQRS using MediatR for a clear separation between commands and queries.
+
+✅ Uses FluentValidation to validate incoming requests.
+
+✅ Leverages AutoMapper to map between domain models and DTOs.
+
 ## Features
 
 * **User Management**: Create and retrieve users, each identified by a unique name.
@@ -46,7 +53,7 @@ TaskManagement is a simple yet robust web API designed to manage Users and Tasks
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/abdelrahmanalimohamed/TaskManagement.git
    cd TaskManagement
    ```
 2. **Restore dependencies**
