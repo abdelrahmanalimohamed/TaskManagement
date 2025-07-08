@@ -46,7 +46,7 @@ TaskManagement is a simple yet robust web API designed to manage Users and Tasks
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/abdelrahmanalimohamed/TaskManagement.git
    cd TaskManagement
    ```
 2. **Restore dependencies**
