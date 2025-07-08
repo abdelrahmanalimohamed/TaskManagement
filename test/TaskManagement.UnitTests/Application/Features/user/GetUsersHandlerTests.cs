@@ -1,18 +1,20 @@
-﻿
-
-namespace TaskManagement.UnitTests.Application.Features.user
+﻿namespace TaskManagement.UnitTests.Application.Features.user
 {
 	public class GetUsersHandlerTests
 	{
 		private readonly Mock<IUserRepository> _userRepositoryMock;
 		private readonly Mock<IMapper> _mapperMock;
 		private readonly GetUsersHandler _handler;
-
+		private readonly Mock<ILogger<GetUsersHandler>> _loggerMock;
 		public GetUsersHandlerTests()
 		{
 			_userRepositoryMock = new Mock<IUserRepository>();
 			_mapperMock = new Mock<IMapper>();
-			_handler = new GetUsersHandler(_userRepositoryMock.Object, _mapperMock.Object);
+			_loggerMock = new Mock<ILogger<GetUsersHandler>>();
+			_handler = new GetUsersHandler(
+				_userRepositoryMock.Object, 
+				_mapperMock.Object, 
+				_loggerMock.Object);
 		}
 
 		[Fact]
@@ -52,6 +54,14 @@ namespace TaskManagement.UnitTests.Application.Features.user
 			var result = await _handler.Handle(query, CancellationToken.None);
 
 			// Assert
+			_loggerMock.Verify(
+				log => log.Log(
+					LogLevel.Information,
+					It.IsAny<EventId>(),
+					It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Retrieved") && v.ToString().Contains("users")),
+					It.IsAny<Exception>(),
+					It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+				Times.Once);
 			Assert.NotNull(result);
 			Assert.Equal(2, result.Items.Count());
 			Assert.Equal(mappedDTOs, result.Items);

@@ -7,6 +7,7 @@ public class CreateUserHandlerTests
 	private readonly Mock<ITaskDomainService> _taskDomainServiceMock = new();
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly Mock<IMapper> _mapperMock = new();
+	private readonly Mock<ILogger<CreateUserHandler>> _loggerMock = new();
 
 	private readonly CreateUserHandler _handler;
 	public CreateUserHandlerTests()
@@ -17,7 +18,8 @@ public class CreateUserHandlerTests
 			_unitOfWorkMock.Object,
 			_historyRepoMock.Object,
 			_taskDomainServiceMock.Object,
-			_mapperMock.Object);
+			_mapperMock.Object ,
+			_loggerMock.Object);
 	}
 
 	[Fact]
@@ -30,6 +32,8 @@ public class CreateUserHandlerTests
 
 		await Assert.ThrowsAsync<CustomDuplicateNameException>(() =>
 			_handler.Handle(command, CancellationToken.None));
+
+		VerifyLog(_loggerMock, LogLevel.Warning, "User name", Times.Once);
 	}
 
 	[Fact]
@@ -56,6 +60,11 @@ public class CreateUserHandlerTests
 		Assert.NotNull(result);
 		_taskRepoMock.Verify(r => r.UpdateAsync(It.IsAny<Tasks>(), It.IsAny<CancellationToken>()), Times.Once);
 		_historyRepoMock.Verify(r => r.AddAsync(It.IsAny<TaskAssignmentHistory>(), It.IsAny<CancellationToken>()), Times.Once);
+
+		VerifyLog(_loggerMock, LogLevel.Information, "User created with ID", Times.Once);
+		VerifyLog(_loggerMock, LogLevel.Information, "Auto-assigning pending tasks", Times.Once);
+		VerifyLog(_loggerMock, LogLevel.Information, "Assigning task ID", Times.Once);
+		VerifyLog(_loggerMock, LogLevel.Information, "Pending task assignment process completed", Times.Once);
 	}
 
 	[Fact]
@@ -88,5 +97,17 @@ public class CreateUserHandlerTests
 
 		_taskRepoMock.Verify(r => r.UpdateAsync(It.IsAny<Tasks>(), It.IsAny<CancellationToken>()), Times.Never);
 		_historyRepoMock.Verify(r => r.AddAsync(It.IsAny<TaskAssignmentHistory>(), It.IsAny<CancellationToken>()), Times.Never);
+		VerifyLog(_loggerMock, LogLevel.Debug, "already assigned to user ID", Times.Once);
+	}
+	private void VerifyLog<T>(Mock<ILogger<T>> loggerMock, LogLevel level, string expectedMessage, Func<Times> times)
+	{
+		loggerMock.Verify(x =>
+			x.Log(
+				level,
+				It.IsAny<EventId>(),
+				It.Is<It.IsAnyType>((v, t) => v.ToString().Contains(expectedMessage)),
+				It.IsAny<Exception>(),
+				It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
+			times);
 	}
 }
